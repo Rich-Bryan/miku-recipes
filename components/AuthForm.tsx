@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { FirebaseError } from "firebase/app"; // Import FirebaseError
 import {
   Form,
   FormControl,
@@ -16,11 +18,13 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { signIn, signUp } from "@/lib/firebase/auth";
 
 const AuthFormSchema = (formType: FormType) => {
   return z.object({
     email: z.string().email(),
     fullName: formType === "sign-up" ? z.string().min(2).max(50) : z.string().optional(),
+    password: z.string().min(6, "Password must be at least 6 characters long")
   });
 };
 
@@ -29,20 +33,44 @@ const AuthForm = ({ type }: { type: FormType }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const formSchema = AuthFormSchema(type); 
+  const router = useRouter();
+
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       fullName: "",
       email: "",
+      password: "",
     },
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    setIsLoading(true)
+    setErrorMessage("")
     console.log(values);
+
+    //settting user sign-in and sign-up
+    try{
+      if (type === 'sign-in'){
+        await signIn(values.email, values.password);
+        router.push("/"); // Redirect to home page
+      }else{
+        await signUp(values.email, values.password)
+        router.push("/"); // Redirect to home page
+      }
+
+    }catch(error){
+      if (error instanceof FirebaseError){
+        setErrorMessage(error instanceof Error ? error.message : "An unknown error occurred");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+
   }
   return (
     <>
@@ -68,7 +96,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                       />
                   </FormControl>
                   </div>
-        
+                  
                   <FormMessage className="shad-form-message" />
                 </FormItem>
               )}
@@ -91,6 +119,27 @@ const AuthForm = ({ type }: { type: FormType }) => {
                   </FormControl>
                 </div>
 
+                <FormMessage className="shad-form-message" />
+              </FormItem>
+              
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <div className="shad-form-item">
+                  <FormLabel className="shad-form-label">Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      className="shad-input"
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
                 <FormMessage className="shad-form-message" />
               </FormItem>
             )}
