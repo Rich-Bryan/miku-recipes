@@ -1,11 +1,12 @@
 "use client"
-import { useEffect } from "react";
+import { useEffect} from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
-import { onAuthStateChanged } from "firebase/auth"; 
+
+import { getAuth, onAuthStateChanged } from "firebase/auth"; 
 
 export default function Home() {
   const router = useRouter();
+  const auth = getAuth()
 
   useEffect(() => {
     // Check authentication status when the component is mounted
@@ -18,11 +19,13 @@ export default function Home() {
         // e.g., router.push("/dashboard");
         router.push("/");
       }
+      
     });
 
     // Cleanup subscription on component unmount
     return () => unsubscribe();
-  }, [router]);
+  }, [router, auth]);
+
 
   return (
     <div className="flex-center h-screen">
