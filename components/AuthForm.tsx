@@ -5,7 +5,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { FirebaseError } from "firebase/app"; // Import FirebaseError
+
 import {
   Form,
   FormControl,
@@ -63,10 +63,9 @@ const AuthForm = ({ type }: { type: FormType }) => {
         router.push("/"); // Redirect to home page
       }
 
-    }catch(error){
-      if (error instanceof FirebaseError){
+    }catch(error: unknown){
+        console.log("error" + error)     
         setErrorMessage(error instanceof Error ? error.message : "An unknown error occurred");
-      }
     } finally {
       setIsLoading(false);
     }
@@ -156,7 +155,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                   className="ml-2 animate-spin"
               />)}
           </Button>
-          {errorMessage && <p className="error-message">*{errorMessage}</p>}
+          {errorMessage && <p className="error-message"> * {errorMessage}</p>}
           <div className="body-2 flex justify-center">
             <p className="text-light-100">
               {type === "sign-in"
