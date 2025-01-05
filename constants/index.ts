@@ -6,12 +6,12 @@ export const navItems = [
     },
     {
         name: "Recipes",
-        icon: "/assets/icons/logout.svg",
-        url: "/documents",
+        icon: "/assets/icons/recipe.svg",
+        url: "/recipes",
     },
     {
         name: "Others",
-        icon: "/assets/icons/logout.svg",
+        icon: "/assets/icons/others.svg",
         url: "/others",
     },
 ];

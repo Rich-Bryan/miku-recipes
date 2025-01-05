@@ -80,7 +80,7 @@ const Sidebar = () => {
       />
       <div className="flex items-center p-4 space-x-4 rounded-lg shadow-md mt-6">
         <FaRegCircleUser size={44}/>
-        <p className="text-lgtext-gray-800">{userName}</p>
+        <p className="hidden text-lgtext-gray-800 lg:block">{userName}</p>
       </div>
       
     </aside>
