@@ -1,7 +1,7 @@
 export const navItems = [
     {
         name: "Dashboard",
-        icon: "/assets/icons/logout.svg",
+        icon: "/assets/icons/dashboard.svg",
         url: "/",
     },
     {
