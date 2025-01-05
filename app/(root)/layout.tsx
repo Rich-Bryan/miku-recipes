@@ -3,7 +3,6 @@ import Header from "@/components/Header";
 import MobileNavigation from "@/components/MobileNavigation";
 import Sidebar from "@/components/Sidebar";
 
-
 import { useAuth } from "@/lib/firebase/auth";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
