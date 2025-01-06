@@ -1,12 +1,12 @@
 import { auth } from "@/lib/firebase";
-import {onAuthStateChanged, User } from 'firebase/auth';
+import {onAuthStateChanged, User, signOut  } from 'firebase/auth';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { FirebaseError } from "firebase/app"; // Import FirebaseError
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 // for existing user
 export async function signUp(email: string, password: string) {
   try {
@@ -36,6 +36,18 @@ export async function signIn(email: string, password: string) {
       throw new Error(error.message);
     }
   }
+}
+export async function UserSignOut(){
+  try{
+    await signOut(auth)
+    redirect("/sign-in")
+
+  }catch (error: unknown) {
+    if (error instanceof FirebaseError) {
+      throw new Error(`Sign-out failed ${error.message}`);
+    }
+  }
+
 }
 
 // Custom hook for handling authentication
