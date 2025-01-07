@@ -20,6 +20,7 @@ const FileUploader = () => {
 
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [ingredients, setIngredients] = useState<string>("");
   const [selectedTag, setSelectedTag] = useState<string>("Dessert");
   const [email, setEmail] = useState<string | null>("");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -46,6 +47,7 @@ const FileUploader = () => {
       const recipeId = await CreateRecipe({
         title,
         description,
+        ingredients,
         tag: selectedTag,
         user_id: currentUser.uid,
         email: email || "",
@@ -76,11 +78,11 @@ const FileUploader = () => {
       </Button>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent>
+        <DialogContent className="w-[60vw] h-[80vh] max-w-full max-h-screen p-6 flex flex-col">
           <DialogHeader>
             <DialogTitle>Upload</DialogTitle>
 
-            <DialogDescription>Title</DialogDescription>
+            <DialogDescription className="mt-4">Title</DialogDescription>
             <Input
               className="mt-1 p-2 border rounded-md"
               type="text"
@@ -90,18 +92,34 @@ const FileUploader = () => {
             <DialogDescription>description</DialogDescription>
             {/* <Input className="mt-1 p-2 border rounded-md" type='text' value={description} onChange={(e) => setDescription(e.target.value)}/> */}
             <textarea
-              className="mt-1 p-2 border rounded-md w-full h-24 resize-none"
+              className="mt-1 p-2 border rounded-md w-full h-[200px] resize-none"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter a detailed description here"
             />
+            <DialogDescription>Ingredients</DialogDescription>
+            <textarea
+              className="mt-1 p-2 border rounded-md w-full h-[200px] resize-none"
+              value={ingredients}
+              onChange={(e) => setIngredients(e.target.value)}
+              placeholder="Enter a detailed Ingredients here"
+            />
           </DialogHeader>
-          <Button onClick={closeModals} className="modal-cancel-button">
-            Cancel
-          </Button>
-          <Button onClick={handleAction} className="modal-submit-button">
-            Submit
-          </Button>
+
+          <div className="flex flex-row ">
+            <Button
+              onClick={closeModals}
+              className="modal-cancel-button w-full"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAction}
+              className="modal-submit-button w-full"
+            >
+              Submit
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

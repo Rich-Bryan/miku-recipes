@@ -270,6 +270,7 @@
   .modal-submit-button {
     @apply primary-btn !mx-0 h-[52px] w-full flex-1 !important;
   }
+  
 
   /* ActionsModalContent */
   .file-details-thumbnail {

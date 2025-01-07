@@ -1,10 +1,17 @@
-import { Props } from '@/lib/firebase/db'
-import Image from 'next/image'
-import React from 'react'
+"use client";
+import { Props } from "@/lib/firebase/db";
+import Image from "next/image";
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
-  
+const Card = ({ recipe }: Props) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-const Card = ({recipe}:Props) => {
   return (
     <div className="file-card p-4 border rounded-md w-64 text-center">
       <div className="flex flex-col items-center">
@@ -14,15 +21,18 @@ const Card = ({recipe}:Props) => {
           width={55}
           height={55}
         />
-         <h2 className="text-xl font-semibold text-gray-800 mb-2">{recipe.title}</h2>
-        <span className="px-3 py-1 text-sm text-black bg-blue-500 rounded-full mb-3">
+        <h2 className="text-xl font-semibold text-gray-800 mb-2">
+          {recipe.title}
+        </h2>
+
+        <span className="body-1 hidden sm:block text-light-200 ">
           {recipe.tag}
         </span>
-        <p className="text-gray-600 text-sm leading-relaxed">{recipe.description}</p>
+
+        <p className="py-4 text-gray-600 text-sm leading-relaxed">description...</p>
       </div>
     </div>
-  )
-}
+  );
+};
 
-
-export default Card
+export default Card;

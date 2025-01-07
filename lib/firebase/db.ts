@@ -8,6 +8,7 @@ import { firestore,  } from '.';
 export declare type Props = {
     title: string;
     description: string;
+    ingredients:string;
     tag: string;
     user_id: string; 
     email: string;
@@ -16,6 +17,7 @@ export declare type Props = {
   export async function CreateRecipe({
     title,
     description,
+    ingredients,
     tag,
     user_id,
     email,
@@ -25,6 +27,7 @@ export declare type Props = {
       const docRef = await addDoc(collection(firestore, "recipes"), {
         title,
         description,
+        ingredients,
         tag,
         user_id,
         createdAt: Date(),
@@ -42,6 +45,7 @@ export declare type Props = {
     title: string;
     tag: string;
     description: string;
+    ingredients: string;
     user_id: string;
     email: string;
   }
@@ -66,3 +70,7 @@ export async function getRecipe(){
     console.error("Error fetching data:", error);
   }
 } 
+
+// add edit func
+
+// add del func
