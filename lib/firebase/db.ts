@@ -1,11 +1,11 @@
-"use client";
+
 
 import { User } from 'firebase/auth';
-import { addDoc, collection, Firestore } from 'firebase/firestore';
+import { addDoc, collection, Firestore, getDocs, orderBy, query } from 'firebase/firestore';
 import React from 'react'
-import { firestore } from '.';
+import { firestore,  } from '.';
 
-declare type Props = {
+export declare type Props = {
     title: string;
     description: string;
     tag: string;
@@ -37,3 +37,32 @@ declare type Props = {
       throw error; 
     }
   }
+  interface Items {
+    id: string;
+    title: string;
+    tag: string;
+    description: string;
+    user_id: string;
+    email: string;
+  }
+
+export async function getRecipe(){
+  try {
+    // Query Firestore collection "Item" and order by createdAt in descending order
+    const q = query(collection(firestore, "recipes"), orderBy("createdAt", "desc"));
+    const querySnapshot = await getDocs(q);
+    const data: Items[] = querySnapshot.docs.map(
+      (doc) =>
+        ({
+          id: doc.id,
+          ...doc.data(),
+        } as Items)
+    );
+
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+} 

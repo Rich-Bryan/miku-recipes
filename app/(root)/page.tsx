@@ -1,35 +1,57 @@
-"use client"
-import { useEffect} from "react";
+"use client";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { getAuth, onAuthStateChanged } from "firebase/auth"; 
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getRecipe } from "@/lib/firebase/db";
+import Card from "@/components/Card";
 
 export default function Home() {
   const router = useRouter();
-  const auth = getAuth()
+  const auth = getAuth();
+  const [recipes, setRecipes] = useState<any[]>([]); // State to store recipes
+  const [loading, setLoading] = useState(true); // Loading state
 
+  // Check for authentication and fetch recipes on component mount
   useEffect(() => {
-    // Check authentication status when the component is mounted
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        // Redirect to sign-up if the user is not authenticated
-        router.push("/sign-up");
-      } else {
-        // Optional: Redirect to another page if the user is authenticated
-        // e.g., router.push("/dashboard");
-        router.push("/");
-      }
-      
-    });
+    const fetchRecipes = async () => {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+          // Redirect to sign-up if not authenticated
+          router.push("/sign-up");
+        } else {
+          // Fetch recipes only if user is authenticated
+          const fetchedRecipes = await getRecipe();
+          setRecipes(fetchedRecipes);
+          setLoading(false); // Set loading to false when data is fetched
+        }
+      });
 
-    // Cleanup subscription on component unmount
-    return () => unsubscribe();
+      // Cleanup subscription on component unmount
+      return () => unsubscribe();
+    };
+
+    fetchRecipes();
   }, [router, auth]);
 
+  // Show loading state while waiting for recipes
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="flex-center h-screen">
-      <h1 className="h1">Miku - will save all your recipes</h1>
+    <div className="">
+      <h1 className='h1 capitalize'>Dashborad</h1>
+      <section className="flex justify-between w-full">
+      {recipes.length > 0 ? (
+        <section className='flex flex-wrap gap-4 pt-4'>
+          {recipes.map((recipe: Props) => (
+            <Card key={recipe.id} recipe={recipe}/>
+          ))}
+        </section>
+      ) : (
+        <p>No recipes found.</p>
+      )}
+      </section>
     </div>
-  )
+  );
 }
