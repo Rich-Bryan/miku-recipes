@@ -22,7 +22,7 @@ const Page = async ({ params }: { params: { type?: string } }) => {
       {dessertRecipes.length > 0 ? (
         <section className='flex flex-wrap gap-4 pt-4'>
           {dessertRecipes.map((recipe: Props) => (
-            <Card key={recipe.id} recipe={recipe}/>
+            <Card key={recipe.id} recipe={recipe} />
           ))}
         </section>
       ) : (

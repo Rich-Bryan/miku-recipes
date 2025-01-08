@@ -15,6 +15,8 @@ import { auth } from "@/lib/firebase";
 import { CreateRecipe } from "@/lib/firebase/db";
 import { v4 as uuidv4 } from "uuid";
 
+
+
 const FileUploader = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -36,6 +38,7 @@ const FileUploader = () => {
     return () => unsubscribe();
   }, []);
 
+
   const handleDialogToggle = () => {
     setIsDialogOpen((prev) => !prev);
   };
@@ -55,6 +58,9 @@ const FileUploader = () => {
       console.log(`Recipe created successfully with ID: ${recipeId}`);
       setDescription("");
       setTitle("");
+      setIngredients("")
+      location.reload();
+ 
       closeModals(); // Close the dialog on successful submission
     } catch (error: unknown) {
       console.error("Failed to create recipe:", error.message);

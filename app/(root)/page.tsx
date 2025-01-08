@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getRecipe } from "@/lib/firebase/db";
+import { getRecipe, Items, Props } from "@/lib/firebase/db";
 import Card from "@/components/Card";
 
 export default function Home() {
@@ -10,6 +10,7 @@ export default function Home() {
   const auth = getAuth();
   const [recipes, setRecipes] = useState<any[]>([]); // State to store recipes
   const [loading, setLoading] = useState(true); // Loading state
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   // Check for authentication and fetch recipes on component mount
   useEffect(() => {
@@ -20,6 +21,7 @@ export default function Home() {
           router.push("/sign-up");
         } else {
           // Fetch recipes only if user is authenticated
+          setCurrentUser(user);
           const fetchedRecipes = await getRecipe();
           setRecipes(fetchedRecipes);
           setLoading(false); // Set loading to false when data is fetched
@@ -40,12 +42,14 @@ export default function Home() {
 
   return (
     <div className="">
-      <h1 className='h1 capitalize'>Dashborad</h1>
+      <h1 className='h1 capitalize'>Dashborad {currentUser.uid}</h1>
       <section className="flex justify-between w-full">
       {recipes.length > 0 ? (
         <section className='flex flex-wrap gap-4 pt-4'>
-          {recipes.map((recipe: Props) => (
-            <Card key={recipe.id} recipe={recipe}/>
+          
+          {recipes.map((recipe: Items) => (
+            <Card key={recipe.id} recipe={recipe} currentUserId={currentUser.uid}/>
+            
           ))}
         </section>
       ) : (
