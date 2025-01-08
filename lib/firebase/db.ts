@@ -10,6 +10,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  updateDoc,
 } from "firebase/firestore";
 import React from "react";
 import { firestore } from ".";
@@ -83,22 +84,39 @@ export async function getRecipe() {
 }
 
 // add edit func
-
-// add del func
-export async function delRecipe(recipeId: string) {
+export async function editRecipe(recipeId: string, updatedData: Partial<{ title: string; description: string; ingredients: string }>) {
   try {
     // Display a confirmation dialog
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this item?"
-    );
-    if (confirmDelete) {
+    const confirmEdit = window.confirm("Are you sure you want to save these changes?");
+    if (confirmEdit) {
       // Reference to the specific recipe document
       const recipeRef = doc(firestore, "recipes", recipeId);
-      await deleteDoc(recipeRef, );
+      await updateDoc(recipeRef, updatedData);
+      location.reload();
 
-      console.log("Document successfully deleted!");
+      console.log("Document successfully updated!");
     }
   } catch (error) {
-    console.error("Error deleting document:", error);
+    console.error("Error updating document:", error);
+  }
+}
+// add del func
+export async function delRecipe(recipeId: string) {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this item?"
+  );
+  if (confirmDelete) {
+    try {
+      // Reference to the specific recipe document
+      const recipeRef = doc(firestore, "recipes", recipeId);
+      await deleteDoc(recipeRef);
+      location.reload();
+  
+      console.log("Document successfully deleted!");
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
+  } else {
+    console.log("Deletion canceled.");
   }
 }

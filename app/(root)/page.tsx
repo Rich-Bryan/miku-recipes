@@ -12,6 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true); // Loading state
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
+    
   // Check for authentication and fetch recipes on component mount
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -34,6 +35,7 @@ export default function Home() {
 
     fetchRecipes();
   }, [router, auth]);
+ 
 
   // Show loading state while waiting for recipes
   if (loading) {
@@ -42,7 +44,7 @@ export default function Home() {
 
   return (
     <div className="">
-      <h1 className='h1 capitalize'>Dashborad {currentUser.uid}</h1>
+      <h1 className='h1 capitalize'>Dashborad </h1>
       <section className="flex justify-between w-full">
       {recipes.length > 0 ? (
         <section className='flex flex-wrap gap-4 pt-4'>
