@@ -1,18 +1,15 @@
-import { getAuth, User } from "firebase/auth";
+
 import {
   addDoc,
   collection,
   deleteDoc,
   doc,
-  Firestore,
-  getDoc,
   getDocs,
-  onSnapshot,
   orderBy,
   query,
   updateDoc,
 } from "firebase/firestore";
-import React from "react";
+
 import { firestore } from ".";
 
 export declare type Props = {

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "./ui/input";
 // import { Label } from "./ui/label";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { CreateRecipe } from "@/lib/firebase/db";
 
@@ -46,6 +46,10 @@ const FileUploader = () => {
     setIsDialogOpen(false);
   };
   const handleAction = async () => {
+    if (!currentUser) {
+      console.error("No user is currently logged in.");
+      return;
+    }
     try {
       const recipeId = await CreateRecipe({
         title,
@@ -59,11 +63,18 @@ const FileUploader = () => {
       setDescription("");
       setTitle("");
       setIngredients("")
+      setSelectedTag("Dessert")
       location.reload();
  
       closeModals(); // Close the dialog on successful submission
-    } catch (error: unknown) {
-      console.error("Failed to create recipe:", error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        // Safely access the message property
+        console.error("Failed to create recipe:", error.message);
+      } else {
+        // Handle unexpected error types
+        console.error("An unexpected error occurred:", error);
+      }
     }
   };
 

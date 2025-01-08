@@ -1,14 +1,22 @@
 
 import Card from '@/components/Card';
 import Sort from '@/components/Sort';
-import { getRecipe, Props } from '@/lib/firebase/db';
+import { getRecipe, Items } from '@/lib/firebase/db';
 import React from 'react';
 
-const Page = async ({ params }: { params: { type?: string } }) => {
+
+const Page = async ({ params }: { params: Promise<{ type?: string }>}) => {
   const type = ((await params))?.type || ""; // Access params and handle the type key safely
-  const recipes = await getRecipe();
+  let recipes: Items[] | undefined;
+  try {
+    recipes = await getRecipe();
+  } catch (error) {
+    // Handle error or provide a fallback, if necessary
+    console.error("Failed to fetch recipes:", error);
+    recipes = [];
+  }
   // Filter recipes where the tag is "Dessert"
-  const dessertRecipes = recipes.filter((recipe) => recipe.tag === "Dessert");
+  const dessertRecipes = recipes ? recipes.filter((recipe) => recipe.tag === "Dessert"): [];
 
   return (
     <div>
@@ -21,8 +29,8 @@ const Page = async ({ params }: { params: { type?: string } }) => {
       </section>
       {dessertRecipes.length > 0 ? (
         <section className='flex flex-wrap gap-4 pt-4'>
-          {dessertRecipes.map((recipe: Props) => (
-            <Card key={recipe.id} recipe={recipe} />
+          {dessertRecipes.map((recipe: Items) => (
+            <Card key={recipe.id} recipe={recipe} currentUserId={recipe.user_id} />
           ))}
         </section>
       ) : (

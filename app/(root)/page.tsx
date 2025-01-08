@@ -1,18 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { getRecipe, Items, Props } from "@/lib/firebase/db";
+import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { getRecipe,  Items } from "@/lib/firebase/db";
 import Card from "@/components/Card";
 
 export default function Home() {
   const router = useRouter();
   const auth = getAuth();
-  const [recipes, setRecipes] = useState<any[]>([]); // State to store recipes
+  const [recipes, setRecipes] = useState<Items[]>([]); // State to store recipes
   const [loading, setLoading] = useState(true); // Loading state
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
-    
   // Check for authentication and fetch recipes on component mount
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -23,9 +22,14 @@ export default function Home() {
         } else {
           // Fetch recipes only if user is authenticated
           setCurrentUser(user);
-          const fetchedRecipes = await getRecipe();
-          setRecipes(fetchedRecipes);
-          setLoading(false); // Set loading to false when data is fetched
+          try {
+            const fetchedRecipes = (await getRecipe()) || [];
+            setRecipes(fetchedRecipes);
+          } catch (error) {
+            console.error("Failed to fetch recipes:", error);
+          } finally {
+            setLoading(false); // Set loading to false when data is fetched
+          }
         }
       });
 
@@ -35,7 +39,6 @@ export default function Home() {
 
     fetchRecipes();
   }, [router, auth]);
- 
 
   // Show loading state while waiting for recipes
   if (loading) {
@@ -44,19 +47,17 @@ export default function Home() {
 
   return (
     <div className="">
-      <h1 className='h1 capitalize'>Dashborad </h1>
+      <h1 className='h1 capitalize'>Dashboard</h1>
       <section className="flex justify-between w-full">
-      {recipes.length > 0 ? (
-        <section className='flex flex-wrap gap-4 pt-4'>
-          
-          {recipes.map((recipe: Items) => (
-            <Card key={recipe.id} recipe={recipe} currentUserId={currentUser.uid}/>
-            
-          ))}
-        </section>
-      ) : (
-        <p>No recipes found.</p>
-      )}
+        {recipes.length > 0 ? (
+          <section className='flex flex-wrap gap-4 pt-4'>
+            {recipes.map((recipe: Items) => (
+              <Card key={recipe.id} recipe={recipe} currentUserId={currentUser?.uid || ""} />
+            ))}
+          </section>
+        ) : (
+          <p>No recipes found.</p>
+        )}
       </section>
     </div>
   );
